@@ -1,6 +1,12 @@
 package ru.serce.jnrfuse.examples;
 
 
+import static jnr.ffi.Platform.OS.WINDOWS;
+import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import jnr.ffi.Platform;
 import jnr.ffi.Pointer;
 import jnr.ffi.types.mode_t;
@@ -12,14 +18,6 @@ import ru.serce.jnrfuse.FuseStubFS;
 import ru.serce.jnrfuse.struct.FileStat;
 import ru.serce.jnrfuse.struct.FuseFileInfo;
 import ru.serce.jnrfuse.struct.Statvfs;
-
-import java.io.UnsupportedEncodingException;
-import java.nio.ByteBuffer;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-
-import static jnr.ffi.Platform.OS.WINDOWS;
 
 public class MemoryFS extends FuseStubFS {
     private class MemoryDirectory extends MemoryPath {

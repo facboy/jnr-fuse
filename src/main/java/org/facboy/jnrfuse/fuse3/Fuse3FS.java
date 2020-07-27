@@ -1,10 +1,14 @@
-package ru.serce.jnrfuse;
+package org.facboy.jnrfuse.fuse3;
 
 import jnr.ffi.Pointer;
 import jnr.ffi.types.gid_t;
 import jnr.ffi.types.mode_t;
 import jnr.ffi.types.off_t;
 import jnr.ffi.types.uid_t;
+import ru.serce.jnrfuse.BaseFuseFS;
+import ru.serce.jnrfuse.FuseFillDir;
+import org.facboy.jnrfuse.fuse3.flags.Fuse3ReaddirFlags;
+import org.facboy.jnrfuse.fuse3.flags.Fuse3RenameFlags;
 import ru.serce.jnrfuse.struct.FileStat;
 import ru.serce.jnrfuse.struct.FuseFileInfo;
 import ru.serce.jnrfuse.struct.Timespec;
@@ -31,7 +35,7 @@ import ru.serce.jnrfuse.struct.Timespec;
  * See http://fuse.sourceforge.net/wiki/ for more information.
  * @since 27.05.15
  */
-public interface FuseFS extends BaseFuseFS {
+public interface Fuse3FS extends BaseFuseFS {
 
     /**
      * Change the permission bits of a file
@@ -39,36 +43,12 @@ public interface FuseFS extends BaseFuseFS {
      * @param mode The argument mode specifies the permissions to use in case a  new  file
      *             is created. @see ru.serce.jnrfuse.struct.FileStat flags
      */
-    int chmod(String path, @mode_t long mode);
+    int chmod(String path, @mode_t long mode, FuseFileInfo fi);
 
     /**
      * Change the owner and group of a file
      */
-    int chown(String path, @uid_t long uid, @gid_t long gid);
-
-    /**
-     * Change the size of an open file
-     * <p>
-     * This method is called instead of the truncate() method if the
-     * truncation was invoked from an ftruncate() system call.
-     * <p>
-     * If this method is not implemented or under Linux kernel
-     * versions earlier than 2.6.15, the truncate() method will be
-     * called instead.
-     */
-    int ftruncate(String path, @off_t long size, FuseFileInfo fi);
-
-    /**
-     * Get attributes from an open file
-     * <p>
-     * This method is called instead of the getattr() method if the
-     * file information is available.
-     * <p>
-     * Currently this is only called after the create() method if that
-     * is implemented (see above).  Later it may be called for
-     * invocations of fstat() too.
-     */
-    int fgetattr(String path, FileStat stbuf, FuseFileInfo fi);
+    int chown(String path, @uid_t long uid, @gid_t long gid, FuseFileInfo fi);
 
     /**
      * Get file attributes.
@@ -77,7 +57,7 @@ public interface FuseFS extends BaseFuseFS {
      * ignored.	 The 'st_ino' field is ignored except if the 'use_ino'
      * mount option is given.
      */
-    int getattr(String path, FileStat stat);
+    int getattr(String path, FileStat stat, FuseFileInfo fi);
 
     /**
      * Initialize filesystem
@@ -86,7 +66,7 @@ public interface FuseFS extends BaseFuseFS {
      * fuse_context to all file operations and as a parameter to the
      * destroy() method.
      */
-    Pointer init(Pointer conn);
+    Pointer init(Pointer conn, Pointer cfg);
 
     /**
      * Read directory
@@ -108,17 +88,17 @@ public interface FuseFS extends BaseFuseFS {
      * is full (or an error happens) the filler function will return
      * '1'.
      */
-    int readdir(String path, Pointer buf, FuseFillDir filter, @off_t long offset, FuseFileInfo fi);
+    int readdir(String path, Pointer buf, FuseFillDir filter, @off_t long offset, FuseFileInfo fi, Fuse3ReaddirFlags flags);
 
     /**
      * Rename a file
      */
-    int rename(String oldpath, String newpath);
+    int rename(String oldpath, String newpath, Fuse3RenameFlags flags);
 
     /**
      * Change the size of a file
      */
-    int truncate(String path, @off_t long size);
+    int truncate(String path, @off_t long size, FuseFileInfo fi);
 
     /**
      * Change the access and modification times of a file with
@@ -129,5 +109,5 @@ public interface FuseFS extends BaseFuseFS {
      * <p>
      * See the utimensat(2) man page for details.
      */
-    int utimens(String path, Timespec[] timespec);
+    int utimens(String path, Timespec[] timespec, FuseFileInfo fi);
 }

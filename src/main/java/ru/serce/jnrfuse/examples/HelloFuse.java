@@ -1,5 +1,7 @@
 package ru.serce.jnrfuse.examples;
 
+import java.nio.file.Paths;
+import java.util.Objects;
 import jnr.ffi.Platform;
 import jnr.ffi.Pointer;
 import jnr.ffi.types.off_t;
@@ -9,9 +11,6 @@ import ru.serce.jnrfuse.FuseFillDir;
 import ru.serce.jnrfuse.FuseStubFS;
 import ru.serce.jnrfuse.struct.FileStat;
 import ru.serce.jnrfuse.struct.FuseFileInfo;
-
-import java.nio.file.Paths;
-import java.util.Objects;
 
 /**
  * @author Sergey Tselovalnikov
